@@ -1,2 +1,3 @@
 python-teglegram-bot
+gunicorn
 pip install -r requirements.txt
