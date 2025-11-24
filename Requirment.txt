@@ -1,1 +1,2 @@
-
+python_teglegram_bot
+pip install -r requirements.txt
