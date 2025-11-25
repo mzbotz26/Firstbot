@@ -1,5 +1,2 @@
-git add requirements.txt runtime.txt bot.py config.py
-git commit -m "Added required files for Koyeb deployment"
-git push origin <main>
-python-teglegram-bot
 pip install -r requirements.txt
+python-telegram-bot==20.7
