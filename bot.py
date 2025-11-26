@@ -1,70 +1,52 @@
 # bot.py
-
-import logging
 from telegram import Update
-from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
+from telegram.ext import Application, CommandHandler, MessageHandler, filters
+from config import BOT_TOKEN, BOT_INFO
 
-# config.py से BOT_TOKEN इंपोर्ट करें
-from config import BOT_TOKEN
+# --- Command Handlers ---
 
-# लॉगिंग सेट करें ताकि आप देख सकें कि क्या हो रहा है
-logging.basicConfig(
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    level=logging.INFO
-)
-logger = logging.getLogger(__name__)
+async def start_command(update: Update, context):
+    """Handles the /start command. Sends the BOT_INFO."""
+    # update.effective_chat.id वह ID है जहाँ से मैसेज आया है
+    await update.effective_chat.send_message(
+        text=BOT_INFO,
+        parse_mode='Markdown' # Markdown formatting के लिए
+    )
 
-# --- Handlers ---
+# --- Message Handler ---
 
-# /start कमांड के लिए फ़ंक्शन
-async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """/start कमांड मिलने पर एक वेलकम मैसेज भेजता है।"""
-    await update.message.reply_text('नमस्ते! मैं आपका Echo Bot हूँ। मुझे कोई मैसेज भेजकर देखें।')
-
-# मुख्य फ़ंक्शन जो आपके लॉजिक को हैंडल करता है
-async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """
-    यूजर द्वारा भेजे गए टेक्स्ट मैसेज को प्रोसेस करता है।
+async def handle_message(update: Update, context):
+    """Handles any non-command text message and replies 'Hello!'."""
+    user_message = update.message.text
     
-    यदि मैसेज का टेक्स्ट बॉट का username है, तो 'Hello' रिप्लाई करता है।
-    अन्यथा, मैसेज को इको (दोहराता) करता है।
-    """
+    # Check if the user's message is the bot's name (optional: to handle mentions)
+    # या आप केवल 'if True:' का उपयोग करके हर संदेश पर हेलो भेज सकते हैं
     
-    # बॉट का username प्राप्त करें (उदाहरण: MyTestBot)
-    bot_username = context.bot.username
-    user_text = update.message.text
-    
-    # चेक करें कि क्या यूजर का टेक्स्ट बॉट के username से मेल खाता है (केस-इन-सेंसिटिव)
-    if user_text and bot_username and user_text.strip().lower() == '@' + bot_username.lower():
-        # यदि यूजर ने बॉट को ही टैग किया है (या सिर्फ username भेजा है)
-        await update.message.reply_text('Hello')
-    else:
-        # किसी अन्य मैसेज के लिए, बस मैसेज को दोहरा दें (Echo)
-        logger.info(f"Received message: {user_text}")
-        await update.message.reply_text(user_text)
+    # Bot 'Hello!' reply logic
+    await update.message.reply_text(
+        text="Hello!",
+        quote=True # Original message को कोट करते हुए रिप्लाई करें
+    )
 
-# --- Main Function ---
+# --- Main Setup ---
 
-def main() -> None:
-    """बॉट को शुरू करें।"""
-    
-    if BOT_TOKEN == "YOUR_BOT_TOKEN_HERE":
-        logger.error("❌ कृपया config.py में BOT_TOKEN को अपने असली टोकन से बदलें।")
-        return
-
-    # बॉट एप्लीकेशन बनाएं
+def main():
+    """Starts the bot."""
+    # 1. Application Builder: BOT_TOKEN का उपयोग करके एप्लिकेशन सेट करें
     application = Application.builder().token(BOT_TOKEN).build()
 
-    # कमांड हैंडलर जोड़ें
+    # 2. Register Handlers: कमांड्स और मैसेज के लिए फ़ंक्शन्स को रजिस्टर करें
+    # /start कमांड के लिए
     application.add_handler(CommandHandler("start", start_command))
-
-    # मैसेज हैंडलर जोड़ें - यह केवल टेक्स्ट मैसेज को प्रोसेस करेगा
-    # और उन्हें handle_message फ़ंक्शन पर भेजेगा।
-    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
     
-    # बॉट को पोलिंग मोड में शुरू करें (यह लगातार नए मैसेज के लिए चेक करेगा)
-    logger.info("🤖 बॉट शुरू हो रहा है...")
-    application.run_polling(allowed_updates=Update.ALL_TYPES)
+    # किसी भी टेक्स्ट मैसेज (जो कमांड नहीं है) के लिए
+    application.add_handler(
+        MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message)
+    )
+
+    # 3. Start Polling: बॉट को सक्रिय करें और मैसेज के लिए सुनना शुरू करें
+    print("Bot is starting... Press Ctrl+C to stop.")
+    application.run_polling(poll_interval=3) # हर 3 सेकंड में नए मैसेज के लिए चेक करें
 
 if __name__ == '__main__':
     main()
