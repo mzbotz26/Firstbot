@@ -1,7 +1,7 @@
 # config.py
 
 # Telegram Bot Token (अपने बॉट टोकन को यहाँ बदलें)
-BOT_TOKEN = "YOUR_BOT_TOKEN_HERE"
+BOT_TOKEN = "7771472205:AAENcUwaWSrT_zx2W8agFA_BS5auhOn7pN4"
 
 # Bot Information (start कमांड के लिए जानकारी)
 BOT_INFO = (
