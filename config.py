@@ -1,8 +1,13 @@
-# WARNING: अपनी वास्तविक जानकारी से बदलें।
-# आप अपना बॉट टोकन @BotFather से प्राप्त कर सकते हैं।
-BOT_TOKEN = "7771472205:AAENcUwaWSrT_zx2W8agFA_BS5auhOn7pN4"
+# config.py
 
-# WARNING: एडमिन की Telegram User ID से बदलें।
-# यह ID वह व्यक्ति है जिसे 'ऑनलाइन आने' के रूप में सूचित किया जाएगा।
-# आप अपनी User ID खोजने के लिए @userinfobot का उपयोग कर सकते हैं।
-ADMIN_ID = 6139607609
+# Telegram Bot Token (अपने बॉट टोकन को यहाँ बदलें)
+BOT_TOKEN = "YOUR_BOT_TOKEN_HERE"
+
+# Bot Information (start कमांड के लिए जानकारी)
+BOT_INFO = (
+    "👋 Hello! I am your FirstBot.\n\n"
+    "I was created to demonstrate a basic bot structure.\n\n"
+    "**Commands I understand:**\n"
+    "/start - Get this information.\n"
+    "Send me any text to get a 'Hello!' reply."
+)
